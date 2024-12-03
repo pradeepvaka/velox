@@ -65,7 +65,8 @@ class UnsafeRowVectorSerializer : public IterativeVectorSerializer {
             unsafeRow.serialize(i, rawBuffer + offset + sizeof(TRowSize));
 
         // Write raw size. Needs to be in big endian order.
-        *(TRowSize*)(rawBuffer + offset) = folly::Endian::big(size);
+        *reinterpret_cast<TRowSize*>(rawBuffer + offset) =
+            folly::Endian::big(size);
         offset += sizeof(TRowSize) + size;
       }
     }

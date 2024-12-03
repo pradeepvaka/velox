@@ -72,7 +72,8 @@ class CompactRowVectorSerializer : public IterativeVectorSerializer {
     for (const auto& range : ranges) {
       if (range.size == 1) {
         // Fast path for single-row serialization.
-        *(TRowSize*)(rawBuffer + offset) = folly::Endian::big(rowSize[index]);
+        *reinterpret_cast<TRowSize*>(rawBuffer + offset) =
+            folly::Endian::big(rowSize[index]);
         auto size =
             row.serialize(range.begin, rawBuffer + offset + sizeof(TRowSize));
         offset += size + sizeof(TRowSize);
